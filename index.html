@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Calcolo Mutuo</title>
+  <meta name="description" content="Calcolo rata mutuo e prestito con ammortamento alla francese. TAN, TAEG e confronto durate." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Mutuo" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png" />
+  <link rel="manifest" href="manifest.json" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      overscroll-behavior: none;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+
+    .panel {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+    }
+    input {
+      background: #0a0a0a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      color: #f0f0f0;
+      transition: border-color 0.15s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #ff8c42;
+      box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.18);
+    }
+    .btn-primary {
+      background: #ff8c42;
+      color: #0a0a0a;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #ff9d5c; }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #2a2a2a;
+      color: #a0a0a0;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .btn-secondary:hover {
+      border-color: #ff8c42;
+      color: #f0f0f0;
+      background: rgba(255, 140, 66, 0.08);
+    }
+    .fade-in { animation: fadeIn 0.3s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media print {
+      body { background: #fff !important; color: #111 !important; }
+      header, .no-print { display: none !important; }
+      .panel { border: 1px solid #ccc !important; background: #fff !important; }
+      #risultati { display: block !important; }
+      main { padding: 0 !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+
+  <header class="border-b border-[#2a2a2a] sticky top-0 z-20" style="background:#141414">
+    <div class="max-w-xl mx-auto px-5 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-base font-semibold text-white tracking-tight">Calcolo Mutuo</h1>
+        <p class="text-[11px] text-[#707070] mt-0.5">Ammortamento alla francese · TAN</p>
+      </div>
+      <a href="https://it.investing.com/news/" target="_blank" rel="noopener noreferrer"
+         class="w-9 h-9 flex items-center justify-center rounded-lg border border-[#2a2a2a] text-[#707070] hover:text-[#ff8c42] hover:border-[#ff8c42] transition-colors"
+         title="Notizie mercati – Investing.com" aria-label="Investing.com">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+          <polyline points="16 7 22 7 22 13"></polyline>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-xl mx-auto px-5 py-6 space-y-5">
+
+    <!-- Form -->
+    <section class="panel p-5">
+      <div class="space-y-4">
+        <div>
+          <label for="importo" class="block text-xs text-[#808080] mb-1.5">Importo (€)</label>
+          <input type="number" id="importo" value="150000" min="1000" step="1000" class="w-full px-3.5 py-2.5 text-sm" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="tan" class="block text-xs text-[#808080] mb-1.5">TAN annuo (%)</label>
+            <input type="number" id="tan" value="3.50" min="0" max="30" step="0.01" class="w-full px-3.5 py-2.5 text-sm" />
+          </div>
+          <div>
+            <label for="anni" class="block text-xs text-[#808080] mb-1.5">Durata (anni)</label>
+            <input type="number" id="anni" value="25" min="1" max="40" step="1" class="w-full px-3.5 py-2.5 text-sm" />
+          </div>
+        </div>
+        <button id="btnCalcola" class="btn-primary w-full py-2.5 text-sm mt-1">
+          Calcola
+        </button>
+      </div>
+    </section>
+
+    <!-- Risultati -->
+    <section id="risultati" class="hidden space-y-4 fade-in">
+
+      <!-- Rata in evidenza -->
+      <div class="panel overflow-hidden">
+        <div class="px-5 py-5" style="background:linear-gradient(135deg,#1a120c 0%,#141414 100%)">
+          <p class="text-xs text-[#a08060]">Rata mensile <span id="durataSelezionata"></span></p>
+          <p id="rataMensile" class="text-3xl font-semibold text-white mt-1 tracking-tight">—</p>
+        </div>
+        <div class="grid grid-cols-3 gap-px bg-[#2a2a2a]">
+          <div class="bg-[#141414] px-3 py-3.5">
+            <p class="text-[11px] text-[#707070]">TAEG annuo</p>
+            <p id="taeg" class="text-base font-semibold text-white mt-0.5">—</p>
+          </div>
+          <div class="bg-[#141414] px-3 py-3.5">
+            <p class="text-[11px] text-[#707070]">Totale interessi</p>
+            <p id="totaleInteressi" class="text-base font-semibold text-white mt-0.5">—</p>
+          </div>
+          <div class="bg-[#141414] px-3 py-3.5">
+            <p class="text-[11px] text-[#707070]">Totale rimborso</p>
+            <p id="totaleRimborso" class="text-base font-semibold text-white mt-0.5">—</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confronto durate -->
+      <div class="panel p-4">
+        <h2 class="text-xs font-semibold text-[#909090] uppercase tracking-wider mb-3">Confronto per durata</h2>
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-[11px] text-[#707070] border-b border-[#2a2a2a]">
+              <th class="pb-2 text-left font-medium">Anni</th>
+              <th class="pb-2 text-right font-medium">Rata</th>
+              <th class="pb-2 text-right font-medium">Interessi</th>
+              <th class="pb-2 text-right font-medium">Totale</th>
+            </tr>
+          </thead>
+          <tbody id="tabellaDurate" class="divide-y divide-[#1f1f1f]">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Export -->
+      <div class="flex gap-3 no-print">
+        <button id="btnPdf" class="btn-secondary flex-1 py-2.5 text-sm">
+          Stampa / PDF
+        </button>
+        <button id="btnCsv" class="btn-secondary flex-1 py-2.5 text-sm">
+          Esporta CSV
+        </button>
+      </div>
+
+      <p class="text-[10px] text-[#555] text-center leading-relaxed no-print">
+        Calcolo orientativo con ammortamento alla francese (formula standard banche italiane).<br>
+        Verificare sempre le condizioni ufficiali della banca.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    /*
+      Formula ufficiale ammortamento alla francese (standard banche IT):
+      R = C × [i(1+i)^n] / [(1+i)^n − 1]
+      i = TAN/100/12 , n = anni×12
+      Riferimento: 150.000 € · 3,5% · 25 anni → 750,94 €
+    */
+    const fmt = (n) => n.toLocaleString('it-IT', {
+      style: 'currency', currency: 'EUR',
+      minimumFractionDigits: 2, maximumFractionDigits: 2
+    });
+
+    function calcolaRata(capitale, tanAnnuo, mesi) {
+      if (mesi <= 0 || capitale <= 0) return 0;
+      if (tanAnnuo === 0) return capitale / mesi;
+      const i = tanAnnuo / 100 / 12;
+      const f = Math.pow(1 + i, mesi);
+      return capitale * (i * f) / (f - 1);
+    }
+
+    function totaleInteressi(capitale, tanAnnuo, mesi, rata) {
+      const i = tanAnnuo / 100 / 12;
+      let residuo = capitale;
+      let tot = 0;
+      for (let m = 1; m <= mesi; m++) {
+        const int = residuo * i;
+        tot += int;
+        let quotaCap = rata - int;
+        if (m === mesi) quotaCap = residuo;
+        residuo = Math.max(0, residuo - quotaCap);
+      }
+      return tot;
+    }
+
+    let ultimoDati = null;
+    const DURATE = [2, 5, 10, 15, 20, 25, 30];
+
+    function popolaConfronto(importo, tan, anniCorrente) {
+      const tbody = document.getElementById('tabellaDurate');
+      tbody.innerHTML = '';
+      DURATE.forEach(a => {
+        const mesi = a * 12;
+        const rata = calcolaRata(importo, tan, mesi);
+        const int = totaleInteressi(importo, tan, mesi, rata);
+        const totPreciso = importo + int;
+        const sel = a === anniCorrente;
+        const tr = document.createElement('tr');
+        tr.className = sel ? 'bg-[#1a140f]' : '';
+        tr.innerHTML = `
+          <td class="py-2.5 ${sel ? 'text-[#ff8c42] font-semibold' : 'text-[#c0c0c0]'}">${a}${sel ? ' ●' : ''}</td>
+          <td class="py-2.5 text-right tabular-nums ${sel ? 'text-[#ff8c42] font-semibold' : 'text-white'}">${fmt(rata)}</td>
+          <td class="py-2.5 text-right tabular-nums text-[#909090]">${fmt(int)}</td>
+          <td class="py-2.5 text-right tabular-nums text-[#909090]">${fmt(totPreciso)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function esportaCSV() {
+      if (!ultimoDati) {
+        alert('Esegui prima un calcolo.');
+        return;
+      }
+      const { importo, tan } = ultimoDati;
+      let csv = 'Durata (anni);Rata mensile;Totale interessi;Totale rimborso\n';
+      DURATE.forEach(a => {
+        const mesi = a * 12;
+        const rata = calcolaRata(importo, tan, mesi);
+        const int = totaleInteressi(importo, tan, mesi, rata);
+        csv += `${a};${rata.toFixed(2).replace('.', ',')};${int.toFixed(2).replace('.', ',')};${(importo + int).toFixed(2).replace('.', ',')}\n`;
+      });
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'confronto_rate_mutuo.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('btnCalcola').addEventListener('click', () => {
+      const importo = parseFloat(document.getElementById('importo').value);
+      const tan = parseFloat(document.getElementById('tan').value);
+      const anni = parseInt(document.getElementById('anni').value, 10);
+
+      if (!Number.isFinite(importo) || importo <= 0) {
+        alert('Inserisci un importo valido maggiore di zero.');
+        return;
+      }
+      if (!Number.isFinite(anni) || anni < 1 || anni > 40) {
+        alert('Inserisci una durata tra 1 e 40 anni.');
+        return;
+      }
+      if (!Number.isFinite(tan) || tan < 0 || tan > 50) {
+        alert('Inserisci un TAN tra 0 e 50%.');
+        return;
+      }
+
+      const mesi = anni * 12;
+      const rata = calcolaRata(importo, tan, mesi);
+      const int = totaleInteressi(importo, tan, mesi, rata);
+
+      // TAEG senza spese accessorie = tasso effettivo annuo (capitalizzazione mensile)
+      // TAEG = (1 + TAN/12)^12 − 1
+      const taeg = tan === 0 ? 0 : (Math.pow(1 + tan / 100 / 12, 12) - 1) * 100;
+
+      document.getElementById('rataMensile').textContent = fmt(rata);
+      document.getElementById('durataSelezionata').textContent = '· ' + anni + ' anni';
+      document.getElementById('taeg').textContent = taeg.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+      document.getElementById('totaleInteressi').textContent = fmt(int);
+      document.getElementById('totaleRimborso').textContent = fmt(importo + int);
+
+      popolaConfronto(importo, tan, anni);
+      ultimoDati = { importo, tan, anni, rata, int };
+
+      const res = document.getElementById('risultati');
+      res.classList.remove('hidden');
+      res.classList.add('fade-in');
+      res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    document.getElementById('btnPdf').addEventListener('click', () => {
+      if (!ultimoDati) {
+        alert('Esegui prima un calcolo.');
+        return;
+      }
+      window.print();
+    });
+
+    document.getElementById('btnCsv').addEventListener('click', esportaCSV);
+  </script>
+</body>
+</html>
