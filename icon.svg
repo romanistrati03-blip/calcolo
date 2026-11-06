@@ -1,5 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#0a0a0a"/>
-  <rect x="96" y="96" width="320" height="320" rx="32" fill="#141414" stroke="#ff8c42" stroke-width="16"/>
-  <text x="256" y="300" text-anchor="middle" font-family="system-ui,sans-serif" font-size="160" font-weight="700" fill="#ff8c42">€</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="30" fill="#102a43"/><path d="M31 35h12v58H31zm27 0h10v8c4-6 10-9 18-9 15 0 25 12 25 30S101 94 86 94c-8 0-14-3-18-9v23H58zm27 49c9 0 14-7 14-20s-5-20-14-20-15 7-15 20 6 20 15 20" fill="#fff"/><circle cx="37" cy="23" r="6" fill="#71c5a4"/></svg>

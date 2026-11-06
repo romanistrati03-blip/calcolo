@@ -1,327 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Calcolo Mutuo</title>
-  <meta name="description" content="Calcolo rata mutuo e prestito con ammortamento alla francese. TAN, TAEG e confronto durate." />
-  <meta name="theme-color" content="#0a0a0a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Mutuo" />
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png" />
-  <link rel="manifest" href="manifest.json" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    html { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0a0a;
-      color: #f0f0f0;
-      overscroll-behavior: none;
-    }
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-    input[type=number] { -moz-appearance: textfield; }
-
-    .panel {
-      background: #141414;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-    }
-    input {
-      background: #0a0a0a;
-      border: 1px solid #2a2a2a;
-      border-radius: 8px;
-      color: #f0f0f0;
-      transition: border-color 0.15s;
-    }
-    input:focus {
-      outline: none;
-      border-color: #ff8c42;
-      box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.18);
-    }
-    .btn-primary {
-      background: #ff8c42;
-      color: #0a0a0a;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: background 0.15s;
-    }
-    .btn-primary:hover { background: #ff9d5c; }
-    .btn-secondary {
-      background: transparent;
-      border: 1px solid #2a2a2a;
-      color: #a0a0a0;
-      border-radius: 8px;
-      font-weight: 500;
-      transition: border-color 0.15s, color 0.15s, background 0.15s;
-    }
-    .btn-secondary:hover {
-      border-color: #ff8c42;
-      color: #f0f0f0;
-      background: rgba(255, 140, 66, 0.08);
-    }
-    .fade-in { animation: fadeIn 0.3s ease-out; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @media print {
-      body { background: #fff !important; color: #111 !important; }
-      header, .no-print { display: none !important; }
-      .panel { border: 1px solid #ccc !important; background: #fff !important; }
-      #risultati { display: block !important; }
-      main { padding: 0 !important; }
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102a43">
+  <meta name="description" content="Calcolatore immobiliare e mutui per uso professionale personale.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <title>iPerito Pro & Mutuo</title>
 </head>
-<body class="min-h-screen antialiased">
-
-  <header class="border-b border-[#2a2a2a] sticky top-0 z-20" style="background:#141414">
-    <div class="max-w-xl mx-auto px-5 py-4 flex items-center justify-between">
-      <div>
-        <h1 class="text-base font-semibold text-white tracking-tight">Calcolo Mutuo</h1>
-        <p class="text-[11px] text-[#707070] mt-0.5">Ammortamento alla francese · TAN</p>
-      </div>
-      <a href="https://it.investing.com/news/" target="_blank" rel="noopener noreferrer"
-         class="w-9 h-9 flex items-center justify-center rounded-lg border border-[#2a2a2a] text-[#707070] hover:text-[#ff8c42] hover:border-[#ff8c42] transition-colors"
-         title="Notizie mercati – Investing.com" aria-label="Investing.com">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
-          <polyline points="16 7 22 7 22 13"></polyline>
-        </svg>
-      </a>
-    </div>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="iPerito Pro & Mutuo, home"><span class="brand-mark">iP</span><span><strong>iPerito</strong><small>PRO & MUTUO</small></span></a>
+    <div class="top-actions"><span id="offline-state" class="status"><i></i> Offline pronto</span><button id="vault-button" class="button button-quiet">Sblocca archivio</button></div>
   </header>
-
-  <main class="max-w-xl mx-auto px-5 py-6 space-y-5">
-
-    <!-- Form -->
-    <section class="panel p-5">
-      <div class="space-y-4">
-        <div>
-          <label for="importo" class="block text-xs text-[#808080] mb-1.5">Importo (€)</label>
-          <input type="number" id="importo" value="150000" min="1000" step="1000" class="w-full px-3.5 py-2.5 text-sm" />
+  <div class="layout">
+    <aside class="sidebar" aria-label="Navigazione principale">
+      <p class="nav-label">STRUMENTI</p>
+      <button class="nav-item active" data-page="home"><span>⌂</span>Panoramica</button>
+      <button class="nav-item" data-page="omi"><span>⌖</span>Quotazioni OMI</button>
+      <button class="nav-item" data-page="surface"><span>▦</span>Superficie commerciale</button>
+      <button class="nav-item" data-page="estimate"><span>⌂</span>Stima immobile</button>
+      <button class="nav-item" data-page="costs"><span>€</span>Spese d’acquisto</button>
+      <button class="nav-item" data-page="mortgage"><span>◷</span>Simulazione mutuo</button>
+      <button class="nav-item" data-page="compare"><span>⇄</span>Confronto offerte</button>
+      <button class="nav-item" data-page="history"><span>◴</span>Storico simulazioni <b id="history-count">0</b></button>
+      <div class="sidebar-bottom"><span class="privacy-dot"></span><span>Dati salvati solo su questo dispositivo</span><button data-page="settings" class="settings-link">Impostazioni e backup</button></div>
+    </aside>
+    <main id="main" tabindex="-1">
+      <section class="page active" id="page-home">
+        <div class="eyebrow">IL TUO CALCOLATORE PROFESSIONALE</div>
+        <div class="hero-row"><div><h1>Buongiorno</h1><p class="lead">Strumenti immobiliari e simulazioni mutuo, raccolti in un unico spazio.</p></div><button class="button button-primary" data-page="mortgage">＋ Nuova simulazione</button></div>
+        <div class="stat-grid">
+          <article class="stat-card"><span>ULTIMA RATA CALCOLATA</span><strong id="home-payment">—</strong><small>Completa una simulazione mutuo</small></article>
+          <article class="stat-card"><span>SIMULAZIONI SALVATE</span><strong id="home-count">0</strong><small>Archivio personale locale</small></article>
+          <article class="stat-card"><span>STATO ARCHIVIO</span><strong id="home-vault">Bloccato</strong><small id="home-vault-note">Sbloccalo per consultare lo storico</small></article>
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label for="anni" class="block text-xs text-[#808080] mb-1.5">Durata (anni)</label>
-            <input type="number" id="anni" value="25" min="1" max="40" step="1" class="w-full px-3.5 py-2.5 text-sm" />
-          </div>
-          <div>
-            <div class="flex items-center justify-between mb-1.5">
-              <label for="tan" class="text-xs text-[#808080]">TAN annuo (%)</label>
-              <a href="https://mutuionline.24oreborsaonline.ilsole24ore.com/guide-mutui/osservatorio-tassi-mutui.asp"
-                 target="_blank" rel="noopener noreferrer"
-                 class="inline-flex items-center gap-0.5 text-[10px] text-[#ff8c42] hover:text-[#ff9d5c] transition-colors"
-                 title="Tassi fissi e variabili vigenti – Il Sole 24 Ore">
-                tassi
-                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <line x1="7" y1="17" x2="17" y2="7"></line>
-                  <polyline points="7 7 17 7 17 17"></polyline>
-                </svg>
-              </a>
-            </div>
-            <input type="number" id="tan" value="3.50" min="0" max="30" step="0.01" class="w-full px-3.5 py-2.5 text-sm" />
-          </div>
+        <div class="section-heading"><div><div class="eyebrow">ACCESSO RAPIDO</div><h2>Da dove vuoi iniziare?</h2></div></div>
+        <div class="tool-grid">
+          <button class="tool-card" data-page="omi"><span class="tool-icon blue">⌖</span><strong>Quotazioni OMI</strong><small>Riferimenti di zona con fonte e periodo</small><span class="arrow">↗</span></button>
+          <button class="tool-card" data-page="surface"><span class="tool-icon green">▦</span><strong>Superficie commerciale</strong><small>Superfici e coefficienti di ragguaglio</small><span class="arrow">↗</span></button>
+          <button class="tool-card" data-page="estimate"><span class="tool-icon amber">⌂</span><strong>Stima immobile</strong><small>Valore base e aggiustamenti trasparenti</small><span class="arrow">↗</span></button>
+          <button class="tool-card" data-page="costs"><span class="tool-icon violet">€</span><strong>Spese d’acquisto</strong><small>Voci configurabili secondo il caso</small><span class="arrow">↗</span></button>
+          <button class="tool-card" data-page="mortgage"><span class="tool-icon blue">◷</span><strong>Simulazione mutuo</strong><small>Rata, sostenibilità e ammortamento</small><span class="arrow">↗</span></button>
+          <button class="tool-card" data-page="compare"><span class="tool-icon green">⇄</span><strong>Confronto offerte</strong><small>Confronta scenari con gli stessi parametri</small><span class="arrow">↗</span></button>
         </div>
-        <button id="btnCalcola" class="btn-primary w-full py-2.5 text-sm mt-1">
-          Calcola
-        </button>
-      </div>
-    </section>
+        <div class="callout"><span>ⓘ</span><p>Le stime e le simulazioni sono strumenti di supporto. Verifica sempre dati, condizioni dell’offerta e documentazione ufficiale prima di usarle come riferimento definitivo.</p></div>
+      </section>
 
-    <!-- Risultati -->
-    <section id="risultati" class="hidden space-y-4 fade-in">
+      <section class="page" id="page-omi">
+        <div class="eyebrow">MERCATO IMMOBILIARE</div><h1>Quotazioni OMI</h1><p class="lead">Inserisci i valori della banca dati OMI consultata. La fonte e il semestre resteranno associati al calcolo.</p>
+        <form class="form-card" id="omi-form"><div class="form-grid">
+          <label>Comune<input name="comune" required placeholder="Es. Milano"></label><label>Zona OMI<input name="zona" placeholder="Es. Centrale / B12"></label>
+          <label>Tipologia immobile<select name="tipologia"><option>Abitazioni civili</option><option>Abitazioni economiche</option><option>Ville e villini</option><option>Uffici</option><option>Negozi</option><option>Box</option><option>Altro</option></select></label>
+          <label>Semestre di riferimento<input name="semestre" placeholder="Es. 2025 · 2° semestre"></label>
+          <label>Valore minimo (€/m²)<input name="min" type="number" min="0" step="1" required placeholder="0"></label><label>Valore massimo (€/m²)<input name="max" type="number" min="0" step="1" required placeholder="0"></label>
+          <label>Stato conservativo<select name="stato"><option>Normale</option><option>Ottimo</option><option>Scadente</option><option>Non indicato</option></select></label><label>Fonte / note<input name="fonte" value="Agenzia delle Entrate · OMI"></label>
+        </div><div class="form-actions"><button class="button button-primary">Calcola intervallo</button><button type="button" class="button button-secondary" data-save="omi">Salva nello storico</button></div></form>
+        <div id="omi-result" class="result-card empty-result">Inserisci i dati della quotazione per vedere il riepilogo.</div>
+        <div class="source-note">L’app non interroga automaticamente la banca dati. Riporta il valore che hai verificato nella <a href="https://www1.agenziaentrate.gov.it/servizi/geopoi_omi/legenda.htm" target="_blank" rel="noopener noreferrer">fonte ufficiale OMI dell’Agenzia delle Entrate</a> e conserva il relativo periodo di riferimento.</div>
+      </section>
 
-      <!-- Rata in evidenza -->
-      <div class="panel overflow-hidden">
-        <div class="px-5 py-5" style="background:linear-gradient(135deg,#1a120c 0%,#141414 100%)">
-          <p class="text-xs text-[#a08060]">Rata mensile <span id="durataSelezionata"></span></p>
-          <p id="rataMensile" class="text-3xl font-semibold text-white mt-1 tracking-tight">—</p>
-        </div>
-        <div class="grid grid-cols-3 gap-px bg-[#2a2a2a]">
-          <div class="bg-[#141414] px-3 py-3.5">
-            <p class="text-[11px] text-[#707070]">TAEG annuo</p>
-            <p id="taeg" class="text-base font-semibold text-white mt-0.5">—</p>
-          </div>
-          <div class="bg-[#141414] px-3 py-3.5">
-            <p class="text-[11px] text-[#707070]">Totale interessi</p>
-            <p id="totaleInteressi" class="text-base font-semibold text-white mt-0.5">—</p>
-          </div>
-          <div class="bg-[#141414] px-3 py-3.5">
-            <p class="text-[11px] text-[#707070]">Totale rimborso</p>
-            <p id="totaleRimborso" class="text-base font-semibold text-white mt-0.5">—</p>
-          </div>
-        </div>
-      </div>
+      <section class="page" id="page-surface">
+        <div class="eyebrow">METRATURA IMMOBILIARE</div><h1>Superficie commerciale</h1><p class="lead">Inserisci le superfici e i coefficienti da applicare secondo il criterio di valutazione adottato.</p>
+        <div class="form-card"><div class="table-wrap"><table class="data-table" id="surface-table"><thead><tr><th>Ambiente / pertinenza</th><th>Superficie m²</th><th>Coefficiente %</th><th>Ragguagliata m²</th><th></th></tr></thead><tbody></tbody></table></div><button id="add-surface" class="button button-secondary">＋ Aggiungi superficie</button><div class="result-strip"><span>Superficie commerciale totale</span><strong id="surface-total">0,00 m²</strong></div><div class="form-actions"><button class="button button-primary" id="save-surface">Salva nello storico</button></div></div>
+        <div class="source-note">Coefficienti iniziali sono valori modificabili di lavoro: verifica sempre il criterio richiesto per la specifica valutazione. Non equivale al calcolo della superficie catastale.</div>
+      </section>
 
-      <!-- Confronto durate -->
-      <div class="panel p-4">
-        <h2 class="text-xs font-semibold text-[#909090] uppercase tracking-wider mb-3">Confronto per durata</h2>
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="text-[11px] text-[#707070] border-b border-[#2a2a2a]">
-              <th class="pb-2 text-left font-medium">Anni</th>
-              <th class="pb-2 text-right font-medium">Rata</th>
-              <th class="pb-2 text-right font-medium">Interessi</th>
-              <th class="pb-2 text-right font-medium">Totale</th>
-            </tr>
-          </thead>
-          <tbody id="tabellaDurate" class="divide-y divide-[#1f1f1f]">
-          </tbody>
-        </table>
-      </div>
+      <section class="page" id="page-estimate">
+        <div class="eyebrow">VALUTAZIONE INDICATIVA</div><h1>Stima immobile</h1><p class="lead">Combina una quotazione al metro quadro con la superficie e gli aggiustamenti che ritieni motivati.</p>
+        <form class="form-card" id="estimate-form"><div class="form-grid">
+          <label>Superficie commerciale (m²)<input name="surface" type="number" min="0" step="0.01" required></label><label>Valore unitario (€/m²)<input name="unit" type="number" min="0" step="1" required></label>
+          <label>Correzione / aggiustamento (%)<input name="adjustment" type="number" step="0.1" value="0"></label><label>Descrizione scenario<input name="label" placeholder="Es. Appartamento · stato buono"></label>
+        </div><div class="form-actions"><button class="button button-primary">Calcola stima</button><button type="button" class="button button-secondary" data-save="estimate">Salva nello storico</button></div></form><div id="estimate-result" class="result-card empty-result">Compila i campi per ottenere un valore indicativo.</div>
+      </section>
 
-      <!-- Export -->
-      <div class="flex gap-3 no-print">
-        <button id="btnPdf" class="btn-secondary flex-1 py-2.5 text-sm">
-          Stampa / PDF
-        </button>
-        <button id="btnCsv" class="btn-secondary flex-1 py-2.5 text-sm">
-          Esporta CSV
-        </button>
-      </div>
+      <section class="page" id="page-costs">
+        <div class="eyebrow">BUDGET DI ACQUISTO</div><h1>Spese d’acquisto</h1><p class="lead">Inserisci gli importi stimati o comunicati dai professionisti. Le imposte non vengono presunte automaticamente.</p>
+        <form class="form-card" id="costs-form"><div class="form-grid">
+          <label>Prezzo immobile (€)<input name="price" type="number" min="0" step="1000" value="0"></label><label>Imposte (€)<input name="taxes" type="number" min="0" step="100" value="0"></label>
+          <label>Notaio (€)<input name="notary" type="number" min="0" step="100" value="0"></label><label>Mediazione (€)<input name="agency" type="number" min="0" step="100" value="0"></label>
+          <label>Spese mutuo / istruttoria (€)<input name="loan" type="number" min="0" step="100" value="0"></label><label>Altre spese (€)<input name="other" type="number" min="0" step="100" value="0"></label>
+          <label>Descrizione altre spese<input name="otherLabel" placeholder="Facoltativo"></label>
+        </div><div class="form-actions"><button class="button button-primary">Calcola totale</button><button type="button" class="button button-secondary" data-save="costs">Salva nello storico</button></div></form><div id="costs-result" class="result-card empty-result">Inserisci le voci per calcolare il budget complessivo.</div>
+        <div class="source-note">Il totale è la somma degli importi inseriti. Regime fiscale, agevolazioni e spese effettive vanno verificati con i professionisti competenti.</div>
+      </section>
 
-      <p class="text-[10px] text-[#555] text-center leading-relaxed no-print">
-        Calcolo orientativo con ammortamento alla francese (formula standard banche italiane).<br>
-        Verificare sempre le condizioni ufficiali della banca.
-      </p>
-    </section>
-  </main>
+      <section class="page" id="page-mortgage">
+        <div class="eyebrow">SIMULAZIONE FINANZIARIA</div><h1>Simulazione mutuo</h1><p class="lead">Calcola rata e piano di ammortamento con parametri espliciti. L’eventuale tasso di riferimento va aggiornato e verificato.</p>
+        <form class="form-card" id="mortgage-form"><div class="form-grid">
+          <label>Importo finanziato (€)<input name="principal" type="number" min="1" step="1000" required value="150000"></label><label>TAN annuo (%)<input name="rate" type="number" min="0" max="100" step="0.001" required value="3.5"></label>
+          <label>Durata (anni)<input name="years" type="number" min="1" max="50" step="1" required value="25"></label><label>Reddito netto mensile (€)<input name="income" type="number" min="0" step="100" value="0"></label>
+          <label>Altri impegni mensili (€)<input name="commitments" type="number" min="0" step="50" value="0"></label><label>Soglia rata / reddito (%)<input name="threshold" type="number" min="1" max="100" step="1" value="35"></label>
+          <label>Valore immobile per LTV (€)<input name="propertyValue" type="number" min="0" step="1000" value="0"></label><label>Riferimento tasso / data<input name="rateSource" placeholder="Es. TAN ipotetico · aggiornato il…"></label>
+          <label class="wide">Nota simulazione<input name="label" placeholder="Es. Tasso fisso · scenario 1"></label>
+        </div><div class="form-actions"><button class="button button-primary">Calcola simulazione</button><button type="button" class="button button-secondary" data-save="mortgage">Salva nello storico</button><button type="button" class="button button-quiet" id="print-mortgage">Esporta / stampa report</button></div></form>
+        <div id="mortgage-result" class="result-card empty-result">Inserisci i parametri e avvia il calcolo.</div><div id="schedule-wrap" class="form-card hidden"><div class="section-heading"><div><div class="eyebrow">PIANO DI AMMORTAMENTO</div><h2>Dettaglio rate</h2></div></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Rata</th><th>Quota capitale</th><th>Quota interessi</th><th>Debito residuo</th></tr></thead><tbody id="schedule-body"></tbody></table></div></div>
+      </section>
 
-  <script>
-    /*
-      Formula ufficiale ammortamento alla francese (standard banche IT):
-      R = C × [i(1+i)^n] / [(1+i)^n − 1]
-      i = TAN/100/12 , n = anni×12
-      Riferimento: 150.000 € · 3,5% · 25 anni → 750,94 €
-    */
-    const fmt = (n) => n.toLocaleString('it-IT', {
-      style: 'currency', currency: 'EUR',
-      minimumFractionDigits: 2, maximumFractionDigits: 2
-    });
+      <section class="page" id="page-compare">
+        <div class="eyebrow">VALUTAZIONE DEGLI SCENARI</div><h1>Confronto offerte</h1><p class="lead">Confronta scenari sulla stessa durata e sullo stesso importo, inserendo il TAN e i costi una tantum noti.</p>
+        <div class="form-card"><div class="form-grid"><label>Importo (€)<input id="compare-principal" type="number" min="1" value="150000"></label><label>Durata (anni)<input id="compare-years" type="number" min="1" max="50" value="25"></label></div><div class="table-wrap"><table class="data-table" id="offers-table"><thead><tr><th>Offerta</th><th>TAN %</th><th>Spese iniziali €</th><th>Rata stimata</th><th>Interessi totali</th><th>Costo stimato*</th><th></th></tr></thead><tbody></tbody></table></div><button id="add-offer" class="button button-secondary">＋ Aggiungi offerta</button><div class="form-actions"><button id="compare-save" class="button button-primary">Salva confronto</button><button id="compare-print" class="button button-quiet">Esporta / stampa report</button></div><div class="source-note">* Somma delle rate calcolate più le spese iniziali inserite. Non è un TAEG e non include costi non dichiarati o non inseriti.</div></div>
+      </section>
 
-    function calcolaRata(capitale, tanAnnuo, mesi) {
-      if (mesi <= 0 || capitale <= 0) return 0;
-      if (tanAnnuo === 0) return capitale / mesi;
-      const i = tanAnnuo / 100 / 12;
-      const f = Math.pow(1 + i, mesi);
-      return capitale * (i * f) / (f - 1);
-    }
+      <section class="page" id="page-history">
+        <div class="eyebrow">ARCHIVIO PERSONALE</div><div class="hero-row"><div><h1>Storico simulazioni</h1><p class="lead">Le simulazioni sono cifrate sul dispositivo e non includono anagrafiche clienti.</p></div><button id="clear-history" class="button button-danger">Svuota storico</button></div>
+        <div id="history-list" class="history-list"></div><div id="history-locked" class="result-card empty-result">Sblocca l’archivio per visualizzare lo storico.</div>
+      </section>
 
-    function totaleInteressi(capitale, tanAnnuo, mesi, rata) {
-      const i = tanAnnuo / 100 / 12;
-      let residuo = capitale;
-      let tot = 0;
-      for (let m = 1; m <= mesi; m++) {
-        const int = residuo * i;
-        tot += int;
-        let quotaCap = rata - int;
-        if (m === mesi) quotaCap = residuo;
-        residuo = Math.max(0, residuo - quotaCap);
-      }
-      return tot;
-    }
-
-    let ultimoDati = null;
-    const DURATE = [2, 5, 10, 15, 20, 25, 30];
-
-    function popolaConfronto(importo, tan, anniCorrente) {
-      const tbody = document.getElementById('tabellaDurate');
-      tbody.innerHTML = '';
-      DURATE.forEach(a => {
-        const mesi = a * 12;
-        const rata = calcolaRata(importo, tan, mesi);
-        const int = totaleInteressi(importo, tan, mesi, rata);
-        const totPreciso = importo + int;
-        const sel = a === anniCorrente;
-        const tr = document.createElement('tr');
-        tr.className = sel ? 'bg-[#1a140f]' : '';
-        tr.innerHTML = `
-          <td class="py-2.5 ${sel ? 'text-[#ff8c42] font-semibold' : 'text-[#c0c0c0]'}">${a}${sel ? ' ●' : ''}</td>
-          <td class="py-2.5 text-right tabular-nums ${sel ? 'text-[#ff8c42] font-semibold' : 'text-white'}">${fmt(rata)}</td>
-          <td class="py-2.5 text-right tabular-nums text-[#909090]">${fmt(int)}</td>
-          <td class="py-2.5 text-right tabular-nums text-[#909090]">${fmt(totPreciso)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function esportaCSV() {
-      if (!ultimoDati) {
-        alert('Esegui prima un calcolo.');
-        return;
-      }
-      const { importo, tan } = ultimoDati;
-      let csv = 'Durata (anni);Rata mensile;Totale interessi;Totale rimborso\n';
-      DURATE.forEach(a => {
-        const mesi = a * 12;
-        const rata = calcolaRata(importo, tan, mesi);
-        const int = totaleInteressi(importo, tan, mesi, rata);
-        csv += `${a};${rata.toFixed(2).replace('.', ',')};${int.toFixed(2).replace('.', ',')};${(importo + int).toFixed(2).replace('.', ',')}\n`;
-      });
-      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'confronto_rate_mutuo.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    document.getElementById('btnCalcola').addEventListener('click', () => {
-      const importo = parseFloat(document.getElementById('importo').value);
-      const tan = parseFloat(document.getElementById('tan').value);
-      const anni = parseInt(document.getElementById('anni').value, 10);
-
-      if (!Number.isFinite(importo) || importo <= 0) {
-        alert('Inserisci un importo valido maggiore di zero.');
-        return;
-      }
-      if (!Number.isFinite(anni) || anni < 1 || anni > 40) {
-        alert('Inserisci una durata tra 1 e 40 anni.');
-        return;
-      }
-      if (!Number.isFinite(tan) || tan < 0 || tan > 50) {
-        alert('Inserisci un TAN tra 0 e 50%.');
-        return;
-      }
-
-      const mesi = anni * 12;
-      const rata = calcolaRata(importo, tan, mesi);
-      const int = totaleInteressi(importo, tan, mesi, rata);
-
-      // TAEG senza spese accessorie = tasso effettivo annuo (capitalizzazione mensile)
-      // TAEG = (1 + TAN/12)^12 − 1
-      const taeg = tan === 0 ? 0 : (Math.pow(1 + tan / 100 / 12, 12) - 1) * 100;
-
-      document.getElementById('rataMensile').textContent = fmt(rata);
-      document.getElementById('durataSelezionata').textContent = '· ' + anni + ' anni';
-      document.getElementById('taeg').textContent = taeg.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
-      document.getElementById('totaleInteressi').textContent = fmt(int);
-      document.getElementById('totaleRimborso').textContent = fmt(importo + int);
-
-      popolaConfronto(importo, tan, anni);
-      ultimoDati = { importo, tan, anni, rata, int };
-
-      const res = document.getElementById('risultati');
-      res.classList.remove('hidden');
-      res.classList.add('fade-in');
-      res.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
-    document.getElementById('btnPdf').addEventListener('click', () => {
-      if (!ultimoDati) {
-        alert('Esegui prima un calcolo.');
-        return;
-      }
-      window.print();
-    });
-
-    document.getElementById('btnCsv').addEventListener('click', esportaCSV);
-  </script>
+      <section class="page" id="page-settings">
+        <div class="eyebrow">PROTEZIONE LOCALE</div><h1>Impostazioni e backup</h1><p class="lead">Nessun account e nessun archivio remoto. L’archivio cifrato resta su questo dispositivo.</p>
+        <div class="form-card"><h2>Archivio cifrato</h2><p class="muted">Imposta una passphrase robusta per cifrare le simulazioni salvate. Se la dimentichi, i dati cifrati non possono essere recuperati.</p><form id="vault-form"><div class="form-grid"><label>Passphrase<input name="passphrase" type="password" minlength="10" autocomplete="new-password" required></label><label>Ripeti passphrase<input name="confirm" type="password" minlength="10" autocomplete="new-password" required></label></div><div class="form-actions"><button class="button button-primary">Crea / sblocca archivio</button><button type="button" id="lock-vault" class="button button-secondary">Blocca</button></div></form>
+          <div class="section-heading compact"><div><div class="eyebrow">PORTABILITÀ</div><h2>Backup cifrato</h2></div></div><p class="muted">Il backup è cifrato con una passphrase indipendente dalla sessione. Custodiscila separatamente.</p><div class="form-actions"><button id="export-backup" class="button button-secondary">Esporta backup</button><label class="button button-secondary file-button">Importa backup<input id="import-backup" type="file" accept="application/json,.json" hidden></label></div></div>
+        <div class="source-note">Evita di usare nomi, codici fiscali o recapiti nelle etichette. Il blocco dell’archivio cancella la chiave dalla memoria della pagina.</div>
+      </section>
+    </main>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js" defer></script>
 </body>
 </html>

@@ -1,51 +1,30 @@
-# Calcolo Mutuo
+# iPerito Pro & Mutuo — web app
 
-Web app per il calcolo della rata di mutui e prestiti con **ammortamento alla francese**.
+Calcolatore personale offline-first ispirato alla struttura funzionale di iPerito Pro & Mutuo. Non contiene anagrafiche, archivio pratiche, account o sincronizzazione remota.
 
-## Funzionalità
+## Avvio locale
 
-- Rata mensile (formula standard banche italiane)
-- TAEG annuo (tasso effettivo da capitalizzazione mensile)
-- Totale interessi e totale rimborso
-- Confronto rate per durate 2 / 5 / 10 / 15 / 20 / 25 / 30 anni
-- Export CSV e stampa PDF
-- Collegamento a Investing.com (notizie mercati)
-- Installabile su home screen (PWA)
+Con Node.js installato, dalla cartella del progetto eseguire `node serve.cjs` e aprire `http://127.0.0.1:4173`. Il server serve esclusivamente file statici locali e non registra le richieste. Per installarla come PWA su iPhone occorre pubblicarla su un dominio HTTPS sotto il proprio controllo e poi usare “Aggiungi alla schermata Home” da Safari.
 
-## Formula
+## Funzioni presenti
 
-```
-Rata = C × [i(1+i)^n] / [(1+i)^n − 1]
-```
+- Quotazioni OMI inserite manualmente con comune, zona, tipologia, periodo, fonte e stato conservativo.
+- Calcolo della superficie commerciale tramite voci e coefficienti modificabili.
+- Stima indicativa al metro quadro con aggiustamento percentuale esplicito.
+- Budget di acquisto con imposte, notaio, agenzia, spese mutuo e altre voci inserite dall’utente.
+- Simulazione mutuo con rata, piano di ammortamento, interessi, rapporto rata/reddito e LTV.
+- Confronto tra più scenari omogenei; il costo mostrato non viene etichettato come TAEG.
+- Storico locale cifrato AES-GCM, derivazione chiave PBKDF2 e backup cifrato importabile/esportabile.
+- Stampa o salvataggio in PDF attraverso il dialogo di stampa del browser.
 
-dove `i = TAN/12` e `n = anni × 12`.
+## Sicurezza e limiti
 
-## Pubblicare su GitHub Pages
+La passphrase dell’archivio non viene salvata. I record sono cifrati prima di essere scritti in IndexedDB; l’archivio si blocca dopo cinque minuti di inattività o quando si usa il pulsante di blocco. Il backup ha una passphrase separata. Per usare Web Crypto e il service worker è necessario HTTPS o localhost. Per il deployment, configurare HTTPS e una politica CSP equivalente a quella fornita dal server locale.
 
-1. Crea un nuovo repository su GitHub (es. `calcolo-mutuo`)
-2. Carica **tutti** i file di questa cartella nella root del repository:
-   - `index.html`
-   - `manifest.json`
-   - `favicon-32.png`
-   - `icon-180.png`
-   - `icon-192.png`
-   - `icon-512.png`
-   - `icon.svg` (opzionale)
-   - `README.md`
-3. Vai su **Settings → Pages**
-4. In **Source** seleziona `Deploy from a branch`
-5. Branch: `main` (o `master`), cartella: `/ (root)`
-6. Salva. Dopo 1–2 minuti l’app sarà online su:
-   `https://TUO-USERNAME.github.io/calcolo-mutuo/`
+OMI e tassi non vengono recuperati automaticamente: vanno aggiornati dall’utente, con fonte e data esplicite. L’app non calcola imposte sulla base di regole normative, non produce un TAEG ufficiale e non sostituisce perizie, preventivi o delibere bancarie. I coefficienti iniziali della superficie sono modificabili e vanno adattati al criterio di stima applicabile.
 
-## Uso locale
+Il service worker memorizza solo il guscio statico dell’app, mai dati o risultati. Non sono inclusi analytics, font remoti o SDK terzi. L’uso di una password robusta sul dispositivo e un backup cifrato custodito separatamente restano essenziali.
 
-Apri `index.html` direttamente nel browser, oppure:
+## Verifica del motore
 
-```bash
-npx serve .
-```
-
-## Note
-
-Calcolo orientativo a supporto di consulenza. Non sostituisce le condizioni contrattuali della banca.
+I test automatici si eseguono con `node --test calculations.test.cjs`. Non servono dipendenze di terze parti.

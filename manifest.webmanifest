@@ -1,0 +1,14 @@
+{
+  "name": "iPerito Pro & Mutuo",
+  "short_name": "iPerito",
+  "description": "Calcolatore professionale per immobili e mutui, uso personale.",
+  "lang": "it-IT",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fa",
+  "theme_color": "#102a43",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
