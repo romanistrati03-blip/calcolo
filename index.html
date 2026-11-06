@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#102a43">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="description" content="Calcolatore immobiliare e mutui per uso professionale personale.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
@@ -12,7 +14,7 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#home" aria-label="iPerito Pro & Mutuo, home"><span class="brand-mark">iP</span><span><strong>iPerito</strong><small>PRO & MUTUO</small></span></a>
-    <div class="top-actions"><span id="offline-state" class="status"><i></i> Offline pronto</span><button id="vault-button" class="button button-quiet">Sblocca archivio</button></div>
+    <div class="top-actions"><button id="vault-button" class="button button-quiet">Sblocca archivio</button></div>
   </header>
   <div class="layout">
     <aside class="sidebar" aria-label="Navigazione principale">
@@ -27,6 +29,20 @@
       <button class="nav-item" data-page="history"><span>◴</span>Storico simulazioni <b id="history-count">0</b></button>
       <div class="sidebar-bottom"><span class="privacy-dot"></span><span>Dati salvati solo su questo dispositivo</span><button data-page="settings" class="settings-link">Impostazioni e backup</button></div>
     </aside>
+    <nav class="mobile-nav" aria-label="Navigazione principale">
+      <button class="mobile-item" data-page="home"><span>⌂</span><small>Home</small></button>
+      <button class="mobile-item" id="property-menu-button" aria-controls="property-menu" aria-expanded="false"><span>⌖</span><small>Immobili</small></button>
+      <button class="mobile-item" data-page="mortgage"><span>◷</span><small>Mutuo</small></button>
+      <button class="mobile-item" data-page="history"><span>◴</span><small>Storico</small></button>
+      <button class="mobile-item" data-page="settings"><span>•••</span><small>Altro</small></button>
+    </nav>
+    <div id="property-menu" class="property-menu" hidden>
+      <button data-page="omi">Quotazioni OMI</button>
+      <button data-page="surface">Superficie commerciale</button>
+      <button data-page="estimate">Stima immobile</button>
+      <button data-page="costs">Spese d’acquisto</button>
+      <button data-page="compare">Confronto offerte</button>
+    </div>
     <main id="main" tabindex="-1">
       <section class="page active" id="page-home">
         <div class="eyebrow">IL TUO CALCOLATORE PROFESSIONALE</div>

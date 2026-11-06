@@ -13,12 +13,23 @@
 
   function toast(message) { const el = $('#toast'); el.textContent = message; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2600); }
   function go(page) {
+    closePropertyMenu();
     $$('.page').forEach(p => p.classList.toggle('active', p.id === `page-${page}`));
     $$('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+    const propertyPages = new Set(['omi', 'surface', 'estimate', 'costs', 'compare']);
+    $$('.mobile-item').forEach(b => {
+      const active = b.id === 'property-menu-button' ? propertyPages.has(page) : b.dataset.page === page;
+      b.classList.toggle('active', active);
+      if (active) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    });
     $('#main').focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'smooth' });
     if (page === 'history') renderHistory();
   }
   document.addEventListener('click', e => { const target = e.target.closest('[data-page]'); if (target) { e.preventDefault(); go(target.dataset.page); } });
+  function closePropertyMenu() { const menu = $('#property-menu'), button = $('#property-menu-button'); if (!menu || !button) return; menu.hidden = true; button.setAttribute('aria-expanded', 'false'); }
+  $('#property-menu-button').addEventListener('click', () => { const menu = $('#property-menu'), button = $('#property-menu-button'); const open = menu.hidden; menu.hidden = !open; button.setAttribute('aria-expanded', String(open)); });
+  document.addEventListener('click', e => { if (!e.target.closest('#property-menu') && !e.target.closest('#property-menu-button')) closePropertyMenu(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePropertyMenu(); });
 
   function dbOpen() { return new Promise((resolve, reject) => { const req = indexedDB.open('iperito-private-v1', 1); req.onupgradeneeded = () => { const db = req.result; db.createObjectStore('vault'); }; req.onsuccess = () => resolve(req.result); req.onerror = () => reject(req.error); }); }
   async function dbGet(key) { const db = await dbOpen(); return new Promise((resolve, reject) => { const req = db.transaction('vault').objectStore('vault').get(key); req.onsuccess = () => { db.close(); resolve(req.result); }; req.onerror = () => { db.close(); reject(req.error); }; }); }
@@ -107,8 +118,6 @@
   $('#export-backup').addEventListener('click', async () => { if (!sessionKey) return toast('Sblocca l’archivio prima.'); const pass = window.prompt('Scegli una passphrase per questo backup cifrato (almeno 10 caratteri)'); if (!pass || pass.length < 10) return toast('Usa una passphrase di almeno 10 caratteri.'); try { const salt = crypto.getRandomValues(new Uint8Array(16)); const key = await derive(pass, salt); const records = await readRecords(); const envelope = { app: 'iPerito Pro & Mutuo', backupVersion: 1, createdAt: new Date().toISOString(), salt: [...salt], payload: await seal({ records }, key) }; const blob = new Blob([JSON.stringify(envelope)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `iperito-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click(); URL.revokeObjectURL(a.href); toast('Backup cifrato esportato.'); } catch (err) { toast(err.message); } });
   $('#import-backup').addEventListener('change', async e => { const file = e.target.files[0]; if (!file) return; if (!sessionKey) { toast('Sblocca l’archivio prima di importare.'); e.target.value = ''; return; } const pass = window.prompt('Inserisci la passphrase del backup'); if (!pass) return; try { const backup = JSON.parse(await file.text()); if (backup.app !== 'iPerito Pro & Mutuo' || backup.backupVersion !== 1) throw new Error('Formato di backup non riconosciuto.'); const key = await derive(pass, new Uint8Array(backup.salt)); const imported = await unseal(backup.payload, key); if (!Array.isArray(imported.records)) throw new Error('Contenuto backup non valido.'); const current = await readRecords(); const merged = [...imported.records, ...current]; const unique = [...new Map(merged.map(x => [x.id, x])).values()].sort((a, b) => b.date.localeCompare(a.date)); await writeRecords(unique.slice(0, 100)); renderHistory(); toast('Backup importato e unito allo storico.'); } catch (err) { toast(err.message || 'Backup non valido o passphrase errata.'); } finally { e.target.value = ''; } });
 
-  window.addEventListener('online', () => { $('#offline-state').innerHTML = '<i></i> Online'; }); window.addEventListener('offline', () => { $('#offline-state').innerHTML = '<i></i> Offline pronto'; });
-  $('#offline-state').innerHTML = navigator.onLine ? '<i></i> Online · calcoli locali' : '<i></i> Offline pronto';
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./service-worker.js').catch(() => {});
   if (!window.isSecureContext || !window.crypto?.subtle || !window.indexedDB) { $('#vault-button').disabled = true; toast('Per l’archivio cifrato apri l’app tramite HTTPS o localhost in un browser aggiornato.'); }
   updateVaultUI();

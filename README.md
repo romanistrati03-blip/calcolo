@@ -6,6 +6,10 @@ Calcolatore personale offline-first ispirato alla struttura funzionale di iPerit
 
 Con Node.js installato, dalla cartella del progetto eseguire `node serve.cjs` e aprire `http://127.0.0.1:4173`. Il server serve esclusivamente file statici locali e non registra le richieste. Per installarla come PWA su iPhone occorre pubblicarla su un dominio HTTPS sotto il proprio controllo e poi usare “Aggiungi alla schermata Home” da Safari.
 
+## Pubblicazione tramite GitHub Pages
+
+Carica il contenuto di questa cartella nella radice di un repository GitHub e abilita GitHub Pages per il ramo scelto, pubblicando dalla cartella principale. Il sito pubblico contiene solo i file dell’app: lo storico rimane cifrato nel browser del dispositivo e non viene caricato su GitHub. Per installarla su iPhone, apri l’indirizzo HTTPS pubblicato con Safari e scegli “Aggiungi alla schermata Home”. Non caricare mai file di backup nello stesso repository.
+
 ## Funzioni presenti
 
 - Quotazioni OMI inserite manualmente con comune, zona, tipologia, periodo, fonte e stato conservativo.
